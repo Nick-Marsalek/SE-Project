@@ -22,7 +22,7 @@ void Game::initWindow()
 	}
 	ifs.close();
 
-	this->window = new sf::RenderWindow(sf::VideoMode(window_bounds), title, sf::Style::Titlebar | sf::Style::Fullscreen);
+	this->window = new sf::RenderWindow(sf::VideoMode(window_bounds), title, sf::Style::Titlebar | sf::Style::Close);
 	this->window->setFramerateLimit(framerate_limit);
 	this->window->setVerticalSyncEnabled(vertical_sync_enabled);
 }
