@@ -10,6 +10,7 @@ int main()
     while (game.running())
     {
         //Update
+        game.updateDt();
         game.update();
 
         //Render

@@ -3,24 +3,32 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
 
+#include "MainMenuState.h"
 
 class Game
 {
 private:
 	//Window variables
 	sf::RenderWindow* window;
-	sf::VideoMode videoMode;
 	sf::Event ev;
+
+	//Keeps track of time to draw
+	sf::Clock dtClock;
+	float dt;
+
+	std::stack<State*> states;
+
+	std::map<std::string, int> supportedKeys;
 
 	//Private Functions
 	void initVariables();
 	void initWindow();
+	void initKeys();
+	void initStates();
+	
+
+
 public:
 	//Constructors / Destructors
 	Game();
@@ -30,6 +38,7 @@ public:
 	const bool running() const;
 
 	//Public Functions
+	void updateDt();
 	void pollEvents();
 	void update();
 	void render();
