@@ -27,4 +27,4 @@ public:
 	void renderButtons(sf::RenderTarget* target = nullptr);
 	void render(sf::RenderTarget* target = nullptr);
 };
-#endif MAINMENUSTATE_H
+#endif //MAINMENUSTATE_H
