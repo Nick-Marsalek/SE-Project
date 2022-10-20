@@ -23,6 +23,7 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
 	: State(window, supportedKeys, states)
 {
 	this->initKeybinds();
+	
 }
 
 GameState::~GameState()
@@ -65,6 +66,9 @@ void GameState::update(const float& dt)
 	this->updateInput(dt);
 	
 	this->player.update(dt);
+
+	system("cls");
+	std::cout << this->mousePosView.x << " " << this->mousePosView.y << std::endl;
 
 
 }

@@ -3,6 +3,7 @@
 Entity::Entity()
 {
 	this->shape.setSize(sf::Vector2f(50.f, 50.f));
+	this->shape.setOrigin(sf::Vector2f(-375.f, -275.f));
 }
 
 Entity::~Entity()
