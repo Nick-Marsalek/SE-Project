@@ -11,7 +11,7 @@ void Game::initWindow()
 	std::ifstream ifs("Config/window.ini");
 
 	std::string title = "None";
-	sf::VideoMode window_bounds(800, 600);
+	sf::VideoMode window_bounds(1920, 1080);
 	unsigned framerate_limit = 120;
 	bool vertical_sync_enabled = false;
 	if (ifs.is_open())
@@ -22,7 +22,7 @@ void Game::initWindow()
 	}
 	ifs.close();
 
-	this->window = new sf::RenderWindow(sf::VideoMode(window_bounds), title, sf::Style::Titlebar | sf::Style::Close);
+	this->window = new sf::RenderWindow(sf::VideoMode(window_bounds), title, sf::Style::Titlebar | sf::Style::Fullscreen);
 	this->window->setFramerateLimit(framerate_limit);
 	this->window->setVerticalSyncEnabled(vertical_sync_enabled);
 }
@@ -103,11 +103,11 @@ void Game::pollEvents()
 		case sf::Event::Closed:
 			this->window->close();
 			break;
-		//case sf::Event::KeyPressed:
-			//if (this->ev.key.code == sf::Keyboard::Escape) {
-				//this->window->close();
-				//break;
-			//}
+		case sf::Event::KeyPressed:
+			if (this->ev.key.code == sf::Keyboard::Escape) {
+				this->window->close();
+				break;
+			}
 		
 		}
 	}
