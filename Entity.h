@@ -21,6 +21,8 @@ class Entity
 private:
 
 protected:
+	sf::Sprite S;
+	sf::Texture T;
 	sf::RectangleShape shape;
 	float movementSpeed = 100.f;
 
