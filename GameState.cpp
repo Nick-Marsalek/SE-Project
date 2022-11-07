@@ -123,6 +123,8 @@ void GameState::updateDebugText()
 
 void GameState::update(const float& dt)
 {
+	sf::View view(sf::Vector2f(160.f, 120.f), sf::Vector2f(320.f, 240.f));
+	this->window->setView(view);
 	this->updateMousePositions();
 
 	this->updateInput(dt);

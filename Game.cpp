@@ -3,15 +3,15 @@
 void Game::initVariables()
 {
 	this->window = nullptr;
-
 }
 
 void Game::initWindow()
 {
 	std::ifstream ifs("Config/window.ini");
-
 	std::string title = "None";
+	//Creates the Window and View; Ititialize the bounds
 	sf::VideoMode window_bounds(1920, 1080);
+
 	unsigned framerate_limit = 120;
 	bool vertical_sync_enabled = false;
 	if (ifs.is_open())
