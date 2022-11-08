@@ -25,10 +25,9 @@ protected:
 	sf::Texture T;
 	sf::RectangleShape shape;
 	float movementSpeed = 100.f;
-	float x_pos;
-	float y_pos;
 
 public:
+	sf::Vector2f Position;
 	Entity();
 	virtual ~Entity();
 

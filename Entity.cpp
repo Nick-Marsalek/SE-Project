@@ -50,6 +50,7 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y)
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 21));
 	}
 	this->S.move(dir_x * this->movementSpeed*dt, dir_y * this->movementSpeed*dt);
+	Position = this->S.getPosition();
 }
 
 void Entity::update(const float& dt)
