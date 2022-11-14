@@ -24,9 +24,8 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
 {
 	this->initKeybinds();
 	this->startMenuActive = false;
-	this->startMenuBox.setSize(sf::Vector2f(150, 500));
+	this->startMenuBox.setSize(sf::Vector2f(40, 210));
 	//1770
-	this->startMenuBox.setPosition(sf::Vector2f(1770.f, 0));
 	this->debugTextInit();
 	
 }
@@ -123,7 +122,9 @@ void GameState::updateDebugText()
 
 void GameState::update(const float& dt)
 {
+
 	sf::View view(player.Position, sf::Vector2f(320.f, 240.f));
+	this->startMenuBox.setPosition(sf::Vector2f(player.Position.x + 120, player.Position.y - 120));
 	this->window->setView(view);
 	this->updateMousePositions();
 

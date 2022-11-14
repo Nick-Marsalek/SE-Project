@@ -21,7 +21,7 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y)
 	int xtext = 0;
 	if (dir_x < 0) //Moving Left
 	{
-		ytext = ((int)S.getPosition().x) / 15 % 3;
+		ytext = ((int)S.getPosition().x) / 15 % 4;
 		xtext = 30;
 		ytext = ytext * 21;
 		this->S.setTextureRect(sf::IntRect(xtext,ytext,14,21));
@@ -29,14 +29,14 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y)
 	}
 	else if (dir_y > 0) //Moving Downward
 	{
-		ytext = ((int)S.getPosition().y)/15 % 3;
+		ytext = ((int)S.getPosition().y)/15 % 4;
 		ytext = ytext * 21;
 		xtext = 0;
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 21));
 	}
 	else if (dir_x > 0) //Moving Right
 	{
-		ytext = ((int)S.getPosition().x) / 15 % 3;
+		ytext = ((int)S.getPosition().x) / 15 % 4;
 		ytext = ytext * 21;
 		xtext = 30;
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 21));
@@ -44,7 +44,7 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y)
 	}
 	else if(dir_y < 0) //Moving Upward
 	{
-		ytext = ((int)S.getPosition().y) / 15 % 3;
+		ytext = ((int)S.getPosition().y) / 15 % 4;
 		ytext = ytext * 21;
 		xtext = 14;
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 21));
