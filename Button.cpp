@@ -1,7 +1,8 @@
 #include "Button.h"
 
 Button::Button(float x, float y, float width, float height,
-	sf::Font* font, std::string text, unsigned int size,
+	sf::Font* font, std::string text, sf::Color textColor, unsigned int size,
+	float xscale, float yscale, sf::Color outlineColor, float outlineThickness,
 	sf::Color idleColor, sf::Color hoverColor, sf::Color activeColor)
 {
 	this->buttonState = BUTTON_IDLE;
@@ -11,8 +12,11 @@ Button::Button(float x, float y, float width, float height,
 	this->font = font;
 	this->text.setFont(*this->font);
 	this->text.setString(text);
-	this->text.setFillColor(sf::Color::Black);
+	this->text.setFillColor(textColor);
 	this->text.setCharacterSize(size);
+	this->text.setScale(sf::Vector2f(xscale, yscale));
+	this->text.setOutlineColor(outlineColor);
+	this->text.setOutlineThickness(outlineThickness);
 	//Center text in button
 	this->text.setPosition(
 		this->shape.getPosition().x + (this->shape.getGlobalBounds().width / 2.f) - this->text.getGlobalBounds().width / 2.f,
@@ -37,10 +41,19 @@ const bool Button::isActive() const
 	return false;
 }
 
-void Button::update(const sf::Vector2f mousePos)
+void Button::update(const sf::Vector2f mousePos, float x, float y)
 {
 	//Update the booleans for hover and pressed
 	//Hover
+	if (x != 0 && y != 0)
+	{
+		this->shape.setPosition(x, y);
+		this->text.setPosition(
+			this->shape.getPosition().x,
+			this->shape.getPosition().y
+		);
+
+	}
 	this->buttonState = BUTTON_IDLE;
 	if (this->shape.getGlobalBounds().contains(mousePos))
 	{

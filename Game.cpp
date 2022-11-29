@@ -41,6 +41,7 @@ void Game::initKeys()
 		}
 	}
 	ifs.close();
+	this->supportedKeys["Enter"] = sf::Keyboard::Key::Enter;
 	this->supportedKeys["Escape"] = sf::Keyboard::Key::Escape;
 	this->supportedKeys["A"] = sf::Keyboard::Key::A;
 	this->supportedKeys["D"] = sf::Keyboard::Key::D;

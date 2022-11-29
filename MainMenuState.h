@@ -10,6 +10,22 @@ private:
 	sf::RectangleShape backround;
 	sf::Font font;
 
+	sf::Sprite mainMenuSprite;
+	sf::Texture mainMenuTexture;
+	sf::Texture mainMenuLogoTexture;
+	sf::Sprite mainMenuLogoSprite;
+	sf::Texture gammaTitle;
+	sf::Sprite gammaSprite;
+	sf::Sprite enterText;
+
+	bool startPressed;
+	bool openingAnimationDone;
+	bool buttonTransitionRun;
+	
+
+	sf::Font debugFont;
+	sf::Text debugText;
+
 	std::map<std::string, Button*>buttons;
 
 	void initFonts();
@@ -20,10 +36,16 @@ public:
 	virtual ~MainMenuState();
 
 	//Functions
+	void sprtieInit();
+	void debugTextInit();
 	void endState();
+	void updateSprites();
 	void updateInput(const float& dt);
 	void updateButtons();
 	void update(const float& dt);
+	void updateDebugText();
+	void buttonTransition();
+	void renderSprites(sf::RenderTarget* target = nullptr);
 	void renderButtons(sf::RenderTarget* target = nullptr);
 	void render(sf::RenderTarget* target = nullptr);
 };

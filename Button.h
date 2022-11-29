@@ -29,14 +29,15 @@ private:
 
 
 public:
-	Button(float x, float y, float width, float height, sf::Font* font, std::string text, unsigned int size,
+	Button(float x, float y, float width, float height, sf::Font* font, std::string text, sf::Color textColor, unsigned int size,
+		float xscale, float yscale, sf::Color outlineColor, float outlineThickness,
 		sf::Color idleColor, sf::Color hoverColor, sf::Color activeColor);
 	~Button();
 	//Accessors
 	const bool isActive() const;
 
 	//Functions
-	void update(const sf::Vector2f mousePos);
+	void update(const sf::Vector2f mousePos, float x, float y);
 	void render(sf::RenderTarget* target);
 };
 #endif
