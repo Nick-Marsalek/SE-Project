@@ -18,6 +18,9 @@ private:
 	sf::Sprite gammaSprite;
 	sf::Sprite enterText;
 
+	sf::SoundBuffer soundBuffer;
+	sf::Music titleMusic;
+
 	bool startPressed;
 	bool openingAnimationDone;
 	bool buttonTransitionRun;
@@ -38,12 +41,14 @@ public:
 	//Functions
 	void sprtieInit();
 	void debugTextInit();
+	void musicInit();
 	void endState();
 	void updateSprites();
 	void updateInput(const float& dt);
 	void updateButtons();
 	void update(const float& dt);
 	void updateDebugText();
+	void updateMusic();
 	void buttonTransition();
 	void renderSprites(sf::RenderTarget* target = nullptr);
 	void renderButtons(sf::RenderTarget* target = nullptr);

@@ -48,6 +48,7 @@ MainMenuState::MainMenuState(sf::RenderWindow* window, std::map<std::string, int
 	this->initButtons();
 	this->sprtieInit();
 	this->debugTextInit();
+	this->musicInit();
 
 	this->startPressed = false;
 	this->openingAnimationDone = false;
@@ -106,6 +107,16 @@ void MainMenuState::debugTextInit()
 	this->debugText.setScale(2, 2);
 }
 
+void MainMenuState::musicInit()
+{
+	if (!this->titleMusic.openFromFile("Assets/Music/TitleTheme.wav"))
+	{
+		throw("Failed to load title screen music");
+	}
+	this->titleMusic.setLoop(true);
+	this->titleMusic.setVolume(30.f);
+}
+
 void MainMenuState::endState()
 {
 	std::cout << "Ending MainMenu State" << std::endl;
@@ -151,6 +162,7 @@ void MainMenuState::update(const float& dt)
 	this->updateMousePositions();
 	this->updateInput(dt);
 	this->updateSprites();
+	this->updateMusic();
 	if(startPressed)
 		this->updateButtons();
 	this->updateDebugText();
@@ -185,16 +197,27 @@ void MainMenuState::updateDebugText()
 	this->debugText.setString(msg);
 }
 
+void MainMenuState::updateMusic()
+{
+	if (this->titleMusic.getStatus() != this->titleMusic.Playing)
+	{
+		this->titleMusic.play();
+	}
+}
+
 void MainMenuState::buttonTransition()
 {
 	static float alpha = 1;
 		this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
 		alpha *= 1.1;
+		if(this->titleMusic.getVolume() > 1)
+			this->titleMusic.setVolume(this->titleMusic.getVolume() - 0.5);
 		if (alpha >= 255)
 		{
 			alpha = 1;
 			buttonTransitionRun = false;
 			this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
+			this->titleMusic.stop();
 			this->states->push(new GameState(this->window, this->supportedKeys, this->states));
 		}
 }
