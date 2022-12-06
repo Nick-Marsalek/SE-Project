@@ -1,4 +1,10 @@
-typedef std::string Name;
+#ifndef MONSTER_H
+#define MONSTER_H
+
+using namespace std;
+#include <string>
+
+typedef string Name;
 typedef double Weight;
 typedef double Height;
 typedef uint8_t EvoLevel;
@@ -30,33 +36,32 @@ enum class BaseType {
 	Psychic,
 	Rock,
 	Steel,
-	Water
+	Water,
+	None
 };
 
-class Type {
-	Type(BasicType main);
-	Type(BasicType main, BasicType sub);
-	void addSubType(BasicType);
-	bool hasType(BasicType) const;
+struct Type {
+	BaseType Base;
+	BaseType Sub;
 };
 
-enum class Gender {
+enum Gender {
 	Male,
 	Female,
 	Unknown
 };
 
-enum class ExpGroup {
+enum ExpGroup {
 	Expidited,
 	Normal,
 	Paced
 };
 
 class Pokemon {
-	Pokemon() = delete;
 	Pokemon(Name name,
-		Type type,
-		Weight, weight,
+		BaseType type,
+		BaseType Sub,
+		Weight weight,
 		Height height,
 		Gender gender,
 		EvoLevel level,
@@ -71,4 +76,22 @@ class Pokemon {
 		BSE_SPE spe,
 		EXP_YLD yld);
 
+public:
+	Name name;
+	struct Type Type;
+	Weight weight;
+	Height height;
+	EvoLevel EVO;
+	bool canEvolve;
+	DexID PID;
+	ExpGroup EXP;
+	BSE_HP HP;
+	BSE_ATK ATK;
+	BSE_SPA SPA;
+	BSE_DEF DEF;
+	BSE_SPD SPD;
+	BSE_SPE SPE;
+	EXP_YLD YLD;
 };
+
+#endif // MONSTER_H
