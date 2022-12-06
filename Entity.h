@@ -24,7 +24,10 @@ protected:
 	sf::Sprite S;
 	sf::Texture T;
 	sf::RectangleShape shape;
+	sf::RectangleShape playerCollisonBox;
 	float movementSpeed = 100.f;
+
+	bool movingRight;
 
 public:
 	sf::Vector2f Position;
@@ -32,6 +35,7 @@ public:
 	virtual ~Entity();
 
 	virtual void move(const float& dt, const float dir_x, const float dir_y);
+	virtual void idle();
 
 	virtual void update(const float& dt);
 	virtual void render(sf::RenderTarget* target);
