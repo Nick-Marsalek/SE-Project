@@ -1,6 +1,10 @@
 #ifndef SETTINGSSTATE_H
 #define SETTINGSTATE_H
-#include "MainMenuState.h"
+#include "State.h"
+#include "Button.h"
+#include <chrono>
+#include <thread>
+#include <fstream>
 class SettingsState :
 	public State
 {
@@ -11,15 +15,24 @@ private:
 	void initFonts();
 	void initKeybinds();
 	void initButtons();
-	void initDebugText();
+	void initText();
 	//void sprtieInit();
 
 	sf::Font font;
 	sf::Font debugFont;
 	sf::Text debugText;
+	sf::Text volumeDisplay;
+	sf::Text volumeTitle;
+	sf::Text savedText;
+	sf::RectangleShape background;
+
+	bool buttonTransistionSettingsBool;
+	bool showSavedText;
+
+
 
 public:
-	SettingsState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states);
+	SettingsState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float *volume);
 	virtual ~SettingsState();
 
 	//Functions
@@ -28,7 +41,8 @@ public:
 	void updateInput(const float& dt);
 	void updateButtons();
 	void update(const float& dt);
-	void updateDebugText();
+	void updateText();
+	void buttonTransition();
 	//void buttonTransition();
 	//void renderSprites(sf::RenderTarget* target = nullptr);
 	void renderButtons(sf::RenderTarget* target = nullptr);
