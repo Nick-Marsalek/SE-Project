@@ -3,6 +3,7 @@
 
 using namespace std;
 #include <string>
+#include <fstream>
 
 typedef string Name;
 typedef double Weight;
@@ -58,6 +59,9 @@ enum ExpGroup {
 };
 
 class Pokemon {
+
+
+public:
 	Pokemon(Name name,
 		BaseType type,
 		BaseType Sub,
@@ -75,8 +79,7 @@ class Pokemon {
 		BSE_SPD spd,
 		BSE_SPE spe,
 		EXP_YLD yld);
-
-public:
+	string file;
 	Name name;
 	struct Type Type;
 	Weight weight;
@@ -94,4 +97,5 @@ public:
 	EXP_YLD YLD;
 };
 
+void init_pokemon();
 #endif // MONSTER_H
