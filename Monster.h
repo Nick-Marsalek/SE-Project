@@ -1,3 +1,8 @@
+#ifndef MONSTER_H
+#define MONSTER_H
+#include <string>
+using namespace std;
+
 typedef std::string Name;
 typedef double Weight;
 typedef double Height;
@@ -72,3 +77,5 @@ class Pokemon {
 		EXP_YLD yld);
 
 };
+
+#endif
