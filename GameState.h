@@ -2,9 +2,11 @@
 #define GAMESTATE_H
 #include "State.h"
 #include "Button.h"
+#include "Map.h"
 class GameState: public State
 {
 private:
+	Maps MA;
 	Entity player;
 	sf::Sprite buttonSprite;
 	sf::Sprite buttonSpriteBag;
