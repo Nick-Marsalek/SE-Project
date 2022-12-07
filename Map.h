@@ -1,5 +1,7 @@
-#ifndef ENTITY_H
-#define ENTITY_H
+#ifndef MAP_H
+#define MAP_H
+
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -16,26 +18,27 @@
 #include <stack>
 #include <map>
 
-class Entity
+using namespace std;
+class Maps
 {
-private:
-
 protected:
+
+public:
 	sf::Sprite S;
 	sf::Texture T;
 	sf::RectangleShape shape;
+	sf::Music mapMus;
 	float movementSpeed = 100.f;
-
-public:
 	sf::Vector2f Position;
-	Entity();
-	virtual ~Entity();
-
-	virtual void move(const float& dt, const float dir_x, const float dir_y);
-
-	virtual void update(const float& dt);
+	float gridSizeF = 16;
+	Maps();
+	//Fcs
+	virtual ~Maps();
 	virtual void render(sf::RenderTarget* target);
+	void MapMusInit();
+	void updateMapMusic();
+	void update();
+	void move(const float& dt, const float dir_x, const float dir_y);
 
 };
-
-#endif // ENTITY_H
+#endif

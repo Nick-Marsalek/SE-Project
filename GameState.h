@@ -24,7 +24,7 @@ private:
 	void initKeybinds();
 	void initButtons();
 public:
-	GameState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float *volume);
+	GameState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states);
 	virtual ~GameState();
 
 	//Functions

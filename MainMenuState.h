@@ -1,7 +1,6 @@
 #ifndef MAINMENUSTATE_H
 #define MAINMENUSTATE_H
 #include "GameState.h"
-#include "SettingsState.h"
 #include "Button.h"
 class MainMenuState :
     public State
@@ -25,7 +24,6 @@ private:
 	bool startPressed;
 	bool openingAnimationDone;
 	bool buttonTransitionRun;
-	bool buttonTransistionSettingsBool;
 	
 
 	sf::Font debugFont;
@@ -37,7 +35,7 @@ private:
 	void initKeybinds();
 	void initButtons();
 public:
-	MainMenuState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float* volume);
+	MainMenuState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states);
 	virtual ~MainMenuState();
 
 	//Functions
@@ -51,8 +49,7 @@ public:
 	void update(const float& dt);
 	void updateDebugText();
 	void updateMusic();
-	void buttonTransitionNewGame();
-	void buttonTransitionSettings();
+	void buttonTransition();
 	void renderSprites(sf::RenderTarget* target = nullptr);
 	void renderButtons(sf::RenderTarget* target = nullptr);
 	void render(sf::RenderTarget* target = nullptr);

@@ -3,12 +3,6 @@
 void Game::initVariables()
 {
 	this->window = nullptr;
-	std::ifstream ifs("Config/settings.ini");
-	if (ifs.is_open())
-	{
-		ifs >> this->volume;
-	}
-	ifs.close();
 }
 
 void Game::initWindow()
@@ -64,7 +58,7 @@ void Game::initKeys()
 
 void Game::initStates()
 {
-	this->states.push(new MainMenuState(this->window, &this->supportedKeys, &this->states, &this->volume));
+	this->states.push(new MainMenuState(this->window, &this->supportedKeys, &this->states));
 }
 
 
@@ -75,7 +69,6 @@ Game::Game()
 	this->initWindow();
 	this->initKeys();
 	this->initStates();
-	
 	
 }
 

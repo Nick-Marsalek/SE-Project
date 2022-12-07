@@ -45,7 +45,6 @@ void Button::update(const sf::Vector2f mousePos, float x, float y)
 {
 	//Update the booleans for hover and pressed
 	//Hover
-
 	if (x != 0 && y != 0)
 	{
 		this->shape.setPosition(x, y);
