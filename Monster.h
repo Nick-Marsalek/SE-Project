@@ -63,39 +63,28 @@ class Pokemon {
 
 public:
 	Pokemon(Name name,
-		BaseType type,
-		BaseType Sub,
-		Weight weight,
-		Height height,
-		Gender gender,
 		EvoLevel level,
 		bool canEvolve,
 		DexID Pid,
-		ExpGroup experience,
 		BSE_HP hp,
 		BSE_ATK atk,
-		BSE_SPA spa,
 		BSE_DEF def,
-		BSE_SPD spd,
 		BSE_SPE spe,
 		EXP_YLD yld);
+	Pokemon();
 	string file;
 	Name name;
 	struct Type Type;
-	Weight weight;
-	Height height;
 	EvoLevel EVO;
 	bool canEvolve;
 	DexID PID;
-	ExpGroup EXP;
 	BSE_HP HP;
 	BSE_ATK ATK;
-	BSE_SPA SPA;
 	BSE_DEF DEF;
-	BSE_SPD SPD;
 	BSE_SPE SPE;
 	EXP_YLD YLD;
+	string getName();
 };
 
-void init_pokemon();
+//void init_pokemon();
 #endif // MONSTER_H

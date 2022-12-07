@@ -3,7 +3,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-
+#include "BattleState.h"
 #include "MainMenuState.h"
 
 class Game
