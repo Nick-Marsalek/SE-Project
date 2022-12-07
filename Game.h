@@ -21,6 +21,8 @@ private:
 
 	std::map<std::string, int> supportedKeys;
 
+	float volume;
+
 	//Private Functions
 	void initVariables();
 	void initWindow();

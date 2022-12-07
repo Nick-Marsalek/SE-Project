@@ -33,6 +33,12 @@ void MainMenuState::initButtons()
 		&this->font, "New Game", sf::Color::White, 72,
 		1, 1, sf::Color::Black, 5.f,
 		sf::Color(70,70,70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
+
+	this->buttons["SETTINGS_STATE"] = new Button(850, 600, 230, 75,
+		&this->font, "Settings", sf::Color::White, 72,
+		1, 1, sf::Color::Black, 5.f,
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
+
 	//sf::Color(70,70,70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 200));
 	this->buttons["EXIT_STATE"] = new Button(880, 700, 170, 75,
 		&this->font, "Quit", sf::Color::White, 72,
@@ -40,8 +46,8 @@ void MainMenuState::initButtons()
 		sf::Color(100, 100, 100, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
 }
 
-MainMenuState::MainMenuState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states)
-	: State(window, supportedKeys, states)
+MainMenuState::MainMenuState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float* volume)
+	: State(window, supportedKeys, states, volume)
 {
 	this->initFonts();
 	this->initKeybinds();
@@ -53,6 +59,7 @@ MainMenuState::MainMenuState(sf::RenderWindow* window, std::map<std::string, int
 	this->startPressed = false;
 	this->openingAnimationDone = false;
 	this->buttonTransitionRun = false;
+	this->buttonTransistionSettingsBool = false;
 
 	this->backround.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
 	this->backround.setFillColor(sf::Color::White);
@@ -66,7 +73,6 @@ MainMenuState::~MainMenuState()
 		it->second;
 	}
 }
-
 
 void MainMenuState::sprtieInit()
 {
@@ -114,7 +120,7 @@ void MainMenuState::musicInit()
 		throw("Failed to load title screen music");
 	}
 	this->titleMusic.setLoop(true);
-	this->titleMusic.setVolume(30.f);
+	this->titleMusic.setVolume(*this->volume);
 }
 
 void MainMenuState::endState()
@@ -139,6 +145,7 @@ void MainMenuState::updateInput(const float& dt)
 	this->checkForQuit();
 
 }
+
 void MainMenuState::updateButtons()
 {
 	for (auto &it : this->buttons)
@@ -152,11 +159,17 @@ void MainMenuState::updateButtons()
 		//this->states->push(new GameState(this->window, this->supportedKeys, this->states));
 	}
 
+	if (this->buttons["SETTINGS_STATE"]->isActive())
+	{
+		buttonTransistionSettingsBool = true;
+	}
+
 	if (this->buttons["EXIT_STATE"]->isActive())
 	{
 		this->quit = true;
 	}
 }
+
 void MainMenuState::update(const float& dt)
 {
 	this->updateMousePositions();
@@ -178,7 +191,9 @@ void MainMenuState::update(const float& dt)
 		}
 	}
 	if (buttonTransitionRun)
-		buttonTransition();
+		buttonTransitionNewGame();
+	if (buttonTransistionSettingsBool)
+		buttonTransitionSettings();
 	
 
 	//system("cls");
@@ -202,10 +217,11 @@ void MainMenuState::updateMusic()
 	if (this->titleMusic.getStatus() != this->titleMusic.Playing)
 	{
 		this->titleMusic.play();
+		this->titleMusic.setVolume(*this->volume);
 	}
 }
 
-void MainMenuState::buttonTransition()
+void MainMenuState::buttonTransitionNewGame()
 {
 	static float alpha = 1;
 		this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
@@ -218,8 +234,25 @@ void MainMenuState::buttonTransition()
 			buttonTransitionRun = false;
 			this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
 			this->titleMusic.stop();
-			this->states->push(new GameState(this->window, this->supportedKeys, this->states));
+			this->states->push(new GameState(this->window, this->supportedKeys, this->states, this->volume));
 		}
+}
+
+void MainMenuState::buttonTransitionSettings()
+{
+	static float alpha = 1;
+	this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
+	alpha *= 1.1;
+	if (this->titleMusic.getVolume() > 1)
+		this->titleMusic.setVolume(this->titleMusic.getVolume() - 0.5);
+	if (alpha >= 255)
+	{
+		alpha = 1;
+		buttonTransistionSettingsBool = false;
+		this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
+		this->titleMusic.stop();
+		this->states->push(new SettingsState(this->window, this->supportedKeys, this->states, this->volume));
+	}
 }
 
 void MainMenuState::renderSprites(sf::RenderTarget* target)

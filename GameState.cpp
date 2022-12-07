@@ -32,8 +32,8 @@ void GameState::initButtons()
 		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
 }
 
-GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states)
-	: State(window, supportedKeys, states)
+GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float* volume)
+	: State(window, supportedKeys, states, volume)
 {
 	this->initKeybinds();
 	this->initButtons();
@@ -86,7 +86,7 @@ void GameState::debugTextInit()
 	this->debugText.setCharacterSize(15);
 	this->debugText.setPosition(0, 0);
 	this->debugText.setFillColor(sf::Color::White);
-	this->debugText.setScale(0.5, 0.5);
+	this->debugText.setScale(2, 2);
 }
 
 void GameState::endState()
@@ -103,18 +103,23 @@ void GameState::updateInput(const float& dt)
 		{
 			this->player.move(dt, -1.f, 0.f);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_RIGHT"))))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_RIGHT"))))
 		{
 			this->player.move(dt, 1.f, 0.f);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_UP"))))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_UP"))))
 		{
 			this->player.move(dt, 0.f, -1.f);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_DOWN"))))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_DOWN"))))
 		{
 			this->player.move(dt, 0.f, 1.f);
 		}
+		else
+		{
+			this->player.idle();
+		}
+		
 	}
 	
 }
@@ -176,15 +181,12 @@ void GameState::updateDebugText()
 	//std::cout << msg;
 	this->debugText.setString(msg);
 	//this->debugText.setPosition(player.Position.x + 120, player.Position.y - 120));
-	this->debugText.setPosition(sf::Vector2f(player.Position.x - 160, player.Position.y - 120));
 }
 
 void GameState::update(const float& dt)
 {
 
-	sf::View view(player.Position, sf::Vector2f(320.f, 240.f));
 	this->startMenuBox.setPosition(sf::Vector2f(player.Position.x - 160, player.Position.y - 120));
-	this->window->setView(view);
 	this->updateMousePositions();
 
 	this->updateInput(dt);
