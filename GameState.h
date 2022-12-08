@@ -4,6 +4,7 @@
 #include "Button.h"
 #include "Map.h"
 #include "MainMenuState.h"
+
 class GameState: public State
 {
 private:
@@ -24,20 +25,30 @@ private:
 	bool settings;
 	bool save;
 	bool main_menu;
+	bool encounter;
 	sf::RectangleShape startMenuBox, transitionBackground;
 	sf::Font debugFont;
 	sf::Text debugText;
+
+	sf::Music song;
+
+	sf::Text pokemonCaught;
 	std::map<std::string, Button*>buttons;
 
 	void initKeybinds();
 	void initButtons();
+	void initLocation();
 public:
 	GameState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float *volume);
 	virtual ~GameState();
 
 	//Functions
 	void debugTextInit();
+	void initMusic();
+	void updateMusic();
 	void endState();
+	void checkForEncounter();
+	void startEncounter();
 	void updateInput(const float& dt);
 	void updateButtons();
 	void updateStartMenu();

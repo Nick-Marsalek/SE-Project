@@ -2,7 +2,10 @@
 #define MAINMENUSTATE_H
 #include "GameState.h"
 #include "SettingsState.h"
+#include "NewGameState.h"
 #include "Button.h"
+#include "PokemonState.h"
+#include "BattleState.h"
 class MainMenuState :
     public State
 {
@@ -26,6 +29,7 @@ private:
 	bool openingAnimationDone;
 	bool buttonTransitionRun;
 	bool buttonTransistionSettingsBool;
+	bool buttonTransistionLoadBool;
 	
 
 	sf::Font debugFont;
@@ -53,6 +57,7 @@ public:
 	void updateMusic();
 	void buttonTransitionNewGame();
 	void buttonTransitionSettings();
+	void buttonTransiitionLoad();
 	void renderSprites(sf::RenderTarget* target = nullptr);
 	void renderButtons(sf::RenderTarget* target = nullptr);
 	void render(sf::RenderTarget* target = nullptr);

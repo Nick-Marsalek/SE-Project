@@ -34,13 +34,18 @@ void MainMenuState::initButtons()
 		1, 1, sf::Color::Black, 5.f,
 		sf::Color(70,70,70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
 
-	this->buttons["SETTINGS_STATE"] = new Button(850, 600, 230, 75,
+	this->buttons["LOAD_GAME"] = new Button(850, 600, 230, 75,
+		&this->font, "Load Game", sf::Color::White, 72,
+		1, 1, sf::Color::Black, 5.f,
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
+
+	this->buttons["SETTINGS_STATE"] = new Button(850, 700, 230, 75,
 		&this->font, "Settings", sf::Color::White, 72,
 		1, 1, sf::Color::Black, 5.f,
 		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
 
 	//sf::Color(70,70,70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 200));
-	this->buttons["EXIT_STATE"] = new Button(880, 700, 170, 75,
+	this->buttons["EXIT_STATE"] = new Button(880, 800, 170, 75,
 		&this->font, "Quit", sf::Color::White, 72,
 		1, 1, sf::Color::Black, 5.f,
 		sf::Color(100, 100, 100, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
@@ -60,6 +65,7 @@ MainMenuState::MainMenuState(sf::RenderWindow* window, std::map<std::string, int
 	this->openingAnimationDone = false;
 	this->buttonTransitionRun = false;
 	this->buttonTransistionSettingsBool = false;
+	this->buttonTransistionLoadBool = false;
 
 	this->backround.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
 	this->backround.setFillColor(sf::Color::White);
@@ -158,6 +164,11 @@ void MainMenuState::updateButtons()
 		buttonTransitionRun = true;
 		//this->states->push(new GameState(this->window, this->supportedKeys, this->states));
 	}
+	
+	if (this->buttons["LOAD_GAME"]->isActive())
+	{
+		this->buttonTransistionLoadBool = true;
+	}
 
 	if (this->buttons["SETTINGS_STATE"]->isActive())
 	{
@@ -167,6 +178,8 @@ void MainMenuState::updateButtons()
 	if (this->buttons["EXIT_STATE"]->isActive())
 	{
 		this->quit = true;
+		this->window->close();
+		
 	}
 }
 
@@ -194,6 +207,9 @@ void MainMenuState::update(const float& dt)
 		buttonTransitionNewGame();
 	if (buttonTransistionSettingsBool)
 		buttonTransitionSettings();
+	if (buttonTransistionLoadBool)
+		buttonTransiitionLoad();
+
 	
 
 	//system("cls");
@@ -234,7 +250,9 @@ void MainMenuState::buttonTransitionNewGame()
 			buttonTransitionRun = false;
 			this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
 			this->titleMusic.stop();
-			this->states->push(new GameState(this->window, this->supportedKeys, this->states, this->volume));
+			this->states->push(new NewGameState(this->window, this->supportedKeys, this->states, this->volume));
+			
+
 		}
 }
 
@@ -252,6 +270,24 @@ void MainMenuState::buttonTransitionSettings()
 		this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
 		this->titleMusic.stop();
 		this->states->push(new SettingsState(this->window, this->supportedKeys, this->states, this->volume));
+		//this->states->push(new BattleState(this->window, this->supportedKeys, this->states, this->volume));
+	}
+}
+
+void MainMenuState::buttonTransiitionLoad()
+{
+	static float alpha = 1;
+	this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
+	alpha *= 1.1;
+	if (this->titleMusic.getVolume() > 1)
+		this->titleMusic.setVolume(this->titleMusic.getVolume() - 0.5);
+	if (alpha >= 255)
+	{
+		alpha = 1;
+		buttonTransistionLoadBool = false;
+		this->backround.setFillColor(sf::Color(0, 0, 0, alpha));
+		this->titleMusic.stop();
+		this->states->push(new GameState(this->window, this->supportedKeys, this->states, this->volume));
 	}
 }
 

@@ -10,7 +10,7 @@ Entity::Entity()
 	this->S.setTextureRect(sf::IntRect(0,0,14,21)); //X, Y, W, H
 	this->S.setScale(5.0f, 5.0f);
 	this->playerCollisonBox.setSize(sf::Vector2f(70, 40));
-	this->playerCollisonBox.setFillColor(sf::Color(255, 0, 0, 100));
+	this->playerCollisonBox.setFillColor(sf::Color(255, 0, 0, 0));
 	this->playerCollisonBox.setPosition(sf::Vector2f(940, 540));
 	this->movingRight = false;
 }
@@ -19,14 +19,15 @@ Entity::~Entity()
 {
 }
 
-void Entity::move(const float& dt, const float dir_x, const float dir_y)
+void Entity::move(const float& dt, const float dir_x, const float dir_y, float mapx, float mapy)
 {
 	int ytext = 0;
 	int xtext = 0;
 	if (dir_x < 0) //Moving Left
 	{
 		this->movingRight = false;
-		ytext = ((int)S.getPosition().x) / 15 % 3;
+		//ytext = ((int)S.getPosition().x) / 15 % 3;
+		ytext = (int)(mapx)*(-1) / 15 % 3;
 		xtext = 30;
 		ytext = ytext * 21;
 		this->S.setTextureRect(sf::IntRect(xtext,ytext,14,22));
@@ -35,7 +36,8 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y)
 	else if (dir_y > 0) //Moving Downward
 	{
 		this->movingRight = false;
-		ytext = ((int)S.getPosition().y)/15 % 3;
+		//ytext = ((int)S.getPosition().y)/15 % 3;
+		ytext = (int)(mapy) * (-1) / 15 % 3;
 		ytext = ytext * 21;
 		xtext = 0;
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 22));
@@ -44,7 +46,8 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y)
 
 	else if (dir_x > 0) //Moving Right
 	{
-		ytext = ((int)S.getPosition().x) / 15 % 3;
+		//ytext = ((int)S.getPosition().x) / 15 % 3;
+		ytext = (int)(mapx) * (-1) / 15 % 3;
 		ytext = ytext * 21;
 		xtext = 30;
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 22));
@@ -55,7 +58,8 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y)
 	else if (dir_y < 0) //Moving Upward
 	{
 		this->movingRight = false;
-		ytext = ((int)S.getPosition().y) / 15 % 3;
+		//ytext = ((int)S.getPosition().y) / 15 % 3;
+		ytext = (int)(mapy) * (-1) / 15 % 3;
 		ytext = ytext * 21;
 		xtext = 14;
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 22));
@@ -64,7 +68,7 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y)
 	
 	//this->S.move(dir_x * this->movementSpeed*dt, dir_y * this->movementSpeed*dt);
 	//Position = this->S.getPosition();
-	this->playerCollisonBox.move(dir_x * this->movementSpeed * dt, dir_y * this->movementSpeed * dt);
+	//this->playerCollisonBox.move(dir_x * this->movementSpeed * dt, dir_y * this->movementSpeed * dt);
 	Position = this->playerCollisonBox.getPosition();
 }
 

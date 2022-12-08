@@ -24,22 +24,39 @@ void GameState::initButtons()
 	this->buttons["START_POKEMON"] = new Button(1450, 0, 500, 150,
 		&this->debugFont, "Pokemon", sf::Color::White, 50,
 		1, 1, sf::Color::Black, 5.f,
-		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 255));
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
 
 	this->buttons["SETTINGS"] = new Button(1450, 300, 500, 150,
 		&this->debugFont, "Settings", sf::Color::White, 50,
 		1, 1, sf::Color::Black, 5.f,
-		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 255));
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
 
 	this->buttons["SAVE_GAME"] = new Button(1450, 600, 500, 150,
 		&this->debugFont, "Save", sf::Color::White, 50,
 		1, 1, sf::Color::Black, 5.f,
-		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 255));
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
 
 	this->buttons["MAIN_MENU"] = new Button(1450, 900, 500, 150,
 		&this->debugFont, "Main Menu", sf::Color::White, 50,
 		1, 1, sf::Color::Black, 5.f,
-		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 255));
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
+}
+
+void GameState::initLocation()
+{
+	ifstream ifs;
+	int x, y;
+	ifs.open("Data/playerPosition.dat");
+	if (ifs.fail())
+	{
+		throw("Player position failed to load");
+	}
+	ifs >> x;
+	ifs >> y;
+	ifs.close();
+	this->MA.setThePlayerPosition(x, y);
+
+
 }
 
 GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float* volume)
@@ -47,12 +64,15 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
 {
 	this->initKeybinds();
 	this->initButtons();
+	this->initLocation();
+	this->initMusic();
 	this->startMenuActive = false;
 	this->startTransition = false;
 	this->pokemon = false;
 	this->settings = false;
 	this->save = false;
 	this->main_menu = false;
+	this->encounter = false;
 	this->transitionBackground.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
 	this->transitionBackground.setFillColor(sf::Color(0, 0, 0, 0));
 	this->startMenuBox.setSize(sf::Vector2f(320, 240));
@@ -107,9 +127,99 @@ void GameState::debugTextInit()
 	this->debugText.setScale(2, 2);
 }
 
+void GameState::initMusic()
+{
+	if (!this->song.openFromFile("Assets/Music/Overworld.wav"))
+	{
+		throw("Failed to load Map Music");
+	}
+	this->song.setLoop(true);
+	this->song.setVolume(*this->volume);
+}
+
+void GameState::updateMusic()
+{
+	if (this->song.getStatus() != this->song.Playing)
+	{
+		this->song.play();
+		this->song.setVolume(*this->volume);
+	}
+}
+
 void GameState::endState()
 {
 	std::cout << "Ending Game State" << std::endl;
+}
+
+void GameState::checkForEncounter()
+{
+	int encounterboxX = this->MA.getEncounterBoxX();
+	int encounterboxY = this->MA.getEncounterBoxy();
+	int playerx = this->MA.getThePlayerPositionX();
+	int playery = this->MA.getThePlayerPositionY();
+	static int encounterNUM = 0;
+	//cout << "Encounter box is at " << encounterboxX << "\t" << encounterboxY << endl;
+	//cout << "Player is at " << playerx << "\t" << playery << endl;
+	if (playerx <= -1400 && playerx >= -2226 && this->encounter == false)
+	{
+		if (playery <= -226 && playery >= -1009 && this->encounter == false)
+		{
+			encounterNUM += 1;
+			if (encounterNUM > 250 && this->encounter == false)
+			{
+				this->encounter = true;
+				//this->MA.setThePlayerPosition(0, 0);
+				encounterNUM = 0;
+			}
+		}
+	}
+}
+
+void GameState::startEncounter()
+{
+	this->song.stop();
+	encounter = false;
+	ofstream ofs;
+	ofs.open("Data/battleInfo.dat");
+	if (ofs.fail())
+		throw("Failed to open battleinfo.dat");
+	volatile int pokemonChance = rand() % 100 + 1;
+	volatile int lvl = rand() % 5 + 1;
+	if (pokemonChance > 0 && pokemonChance < 30)
+	{
+		ofs << "Cyndaquil ";
+		ofs << lvl;
+		ofs.close();
+		this->states->push(new BattleState(this->window, this->supportedKeys, this->states, this->volume));
+	}
+	else if (pokemonChance >= 30 && pokemonChance < 60)
+	{
+		ofs << "Totodile ";
+		ofs << lvl;
+		ofs.close();
+		this->states->push(new BattleState(this->window, this->supportedKeys, this->states, this->volume));
+	}
+	else if (pokemonChance >= 60 && pokemonChance < 90)
+	{
+		ofs << "Chikorita ";
+		ofs << lvl;
+		
+		ofs.close();
+		this->states->push(new BattleState(this->window, this->supportedKeys, this->states, this->volume));
+	}
+	else if (pokemonChance >= 90)
+	{
+		ofs << "Pikachu ";
+		
+		ofs.close();
+		this->states->push(new BattleState(this->window, this->supportedKeys, this->states, this->volume));
+	}
+	else {
+		ofs.close();
+	}
+	
+	
+
 }
 
 void GameState::updateInput(const float& dt)
@@ -120,18 +230,22 @@ void GameState::updateInput(const float& dt)
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_LEFT"))))
 		{
 			this->MA.move(dt, -1.f, 0.f);
+			this->player.move(dt, -1.f, 0.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_RIGHT"))))
 		{
 			this->MA.move(dt, 1.f, 0.f);
+			this->player.move(dt, 1.f, 0.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_UP"))))
 		{
 			this->MA.move(dt, 0.f, -1.f);
+			this->player.move(dt, 0.f, -1.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_DOWN"))))
 		{
 			this->MA.move(dt, 0.f, 1.f);
+			this->player.move(dt, 0.f, 1.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
 		}
 		else
 		{
@@ -153,6 +267,7 @@ void GameState::updateButtons()
 	{
 		this->pokemon = true;
 		this->startTransition = true;
+		
 	}
 	if (this->buttons["SETTINGS"]->isActive())
 	{
@@ -161,7 +276,19 @@ void GameState::updateButtons()
 	}
 	if (this->buttons["SAVE_GAME"]->isActive())
 	{
-
+		ofstream ofs;
+		ofs.open("Data/playerPosition.dat");
+		if (ofs.fail())
+		{
+			throw("Player position failed to set");
+		}
+		float x, y;
+		x = this->MA.getThePlayerPositionX();
+		y = this->MA.getThePlayerPositionY();
+		ofs << x;
+		ofs << " ";
+		ofs << y;
+		ofs.close();
 	}
 	if (this->buttons["MAIN_MENU"]->isActive())
 	{
@@ -229,6 +356,8 @@ void GameState::update(const float& dt)
 
 	this->updateStartMenu();
 
+	this->updateMusic();
+
 	this->MA.update();
 	
 	this->player.update(dt);
@@ -236,6 +365,11 @@ void GameState::update(const float& dt)
 	this->updateButtons();
 
 	this->updateDebugText();
+
+	this->checkForEncounter();
+
+	if (this->encounter == true)
+		startEncounter();
 
 	if (startTransition == true)
 	{
@@ -251,6 +385,8 @@ void GameState::update(const float& dt)
 				this->pokemon = false;
 				this->transitionBackground.setFillColor(sf::Color(0, 0, 0, 0));
 				alpha = 1;
+				this->song.stop();
+				this->states->push(new PokemonState(this->window, this->supportedKeys, this->states, this->volume));
 			}
 			else if (settings)
 			{
@@ -258,7 +394,7 @@ void GameState::update(const float& dt)
 				this->startTransition = false;
 				this->transitionBackground.setFillColor(sf::Color(0, 0, 0, 0));
 				alpha = 1;
-
+				this->song.stop();
 				this->states->push(new SettingsState(this->window, this->supportedKeys, this->states, this->volume));
 			}
 			else if (main_menu)
@@ -267,7 +403,8 @@ void GameState::update(const float& dt)
 				this->startTransition = false;
 				this->transitionBackground.setFillColor(sf::Color(0, 0, 0, 0));
 				alpha = 1;
-				this->quit = true;
+				this->song.stop();
+				this->states->push(new MainMenuState(this->window, this->supportedKeys, this->states, this->volume));;
 			}
 		}
 	}

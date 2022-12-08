@@ -146,6 +146,7 @@ void BattleState::initMonsters()
 	}
 	ifs2 >> this->cpuPoke;
 	ifs2 >> this->cpuLevel;
+	ifs2.close();
 	if (this->cpuPoke == "Totodile")
 	{
 		cpuHP = this->Totodile.HP + (2 * this->cpuLevel);
@@ -205,6 +206,7 @@ BattleState::BattleState(sf::RenderWindow* window, std::map<std::string, int>* s
 	this->showDamageText = true;
 	this->endBattle = false;
 	this->playerDead = false;
+	this->quit = false;
 	this->transition.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
 	this->transition.setFillColor(sf::Color::Black);
 	this->initMusic();
@@ -238,6 +240,7 @@ void BattleState::endState()
 {
 	std::cout << "Ending Battle State" << std::endl;
 	this->quit = true;
+	
 
 }
 
@@ -270,7 +273,9 @@ void BattleState::updateButtons()
 	}
 	if (this->buttons["GROWL_ATTACK"]->isActive())
 	{
-		
+		this->cpuATTACK -= 10;
+		this->playerTurn = false;
+		this->cpuTurn = true;
 		std::this_thread::sleep_for(std::chrono::milliseconds(300));
 	}
 	if (this->buttons["CATCH_POKEMON"]->isActive())
@@ -330,6 +335,7 @@ void BattleState::initBattle()
 	cout << this->yield << endl;
 	ifs >> this->currentLevel;
 	cout << this->currentLevel << endl;
+	ifs >> this->currentXp;
 	ifs.close();
 	this->hp = this->hp + (2 * this->currentLevel);
 	this->currentHP = this->currentHP + (2 * this->currentLevel);
@@ -504,6 +510,7 @@ void BattleState::update(const float& dt)
 	if (endBattle == true)
 	{
 		this->transition.setFillColor(sf::Color(0, 0, 0, alpha));
+		//this->battleTheme.setVolume(this->battleTheme.getVolume()-0.1);
 		alpha *= 1.025;
 		if (alpha >= 255)
 		{
@@ -649,6 +656,14 @@ void BattleState::atmpCatch()
 		this->cpuTurn = false;
 		this->showDamageText = false;
 		this->pokemonCaught = true;
+		ofstream ofs;
+		ofs.open("Data/pokemonCaught.dat", std::ios_base::app);
+		if (ofs.fail())
+		{
+			throw("Battle State failed to write to pokemon Caught");
+		}
+		ofs << this->cpuPoke << endl;
+		ofs.close();
 		this->endBattle = true;
 	}
 	else
@@ -661,6 +676,8 @@ void BattleState::atmpCatch()
 void BattleState::endBattleState()
 {
 	this->battleTheme.stop();
+	this->openingAnimationDone = false;
+	this->secondAnimationDone = false;
 	this->endState();
 }
 
@@ -714,6 +731,46 @@ void BattleState::startCPUTurn()
 		this->pokemonCaught = true;
 		this->damageText.setString(this->cpuPoke + " has been defeated!");
 		this->damageText.setPosition(900, 500);
+
+		volatile float xpEarned = rand() % 20 + 1;
+		int previousLevel = this->currentLevel;
+		this->currentXp += (int)(xpEarned);
+		if (this->currentXp > 50)
+		{
+			this->currentLevel += 1;
+			this->currentXp = 0;
+		}
+		ofstream ofs;
+		ofs.open("Data/playerSave.dat");
+		if (ofs.fail())
+			throw("Failed to open player save");
+
+		ofs << this->pokemonName;
+		ofs << " ";
+		ofs << this->evolveLevel;
+		ofs << " ";
+		ofs << this->canEvolve;
+		ofs << " ";
+		ofs << this->pid;
+		ofs << " ";
+		ofs << (this->hp-(2*previousLevel));
+		ofs << " ";
+		ofs << (this->currentHP-(2*previousLevel));
+		ofs << " ";
+		ofs << (this->attack-(2*previousLevel));
+		ofs << " ";
+		ofs << (this->defense-(2*previousLevel));
+		ofs << " ";
+		ofs << (this->speed-(2*previousLevel));
+		ofs << " ";
+		ofs << (this->yield-(2*previousLevel));
+		ofs << " ";
+		ofs << this->currentLevel;
+		ofs << " ";
+		ofs << this->currentXp;
+
+		ofs.close();
+
 
 	}
 }

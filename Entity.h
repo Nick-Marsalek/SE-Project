@@ -34,7 +34,7 @@ public:
 	Entity();
 	virtual ~Entity();
 
-	virtual void move(const float& dt, const float dir_x, const float dir_y);
+	virtual void move(const float& dt, const float dir_x, const float dir_y, float mapx, float mapy);
 	virtual void idle();
 
 	virtual void update(const float& dt);

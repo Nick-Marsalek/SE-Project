@@ -26,7 +26,7 @@ protected:
 public:
 	sf::Sprite S;
 	sf::Texture T;
-	sf::RectangleShape shape;
+	sf::RectangleShape shape, encounterBOX;
 	sf::Music mapMus;
 	float movementSpeed = 200.f;
 	sf::Vector2f Position;
@@ -35,6 +35,11 @@ public:
 	//Fcs
 	virtual ~Maps();
 	virtual void render(sf::RenderTarget* target);
+	float getThePlayerPositionX();
+	float getThePlayerPositionY();
+	float getEncounterBoxX();
+	float getEncounterBoxy();
+	void setThePlayerPosition(float x, float y);
 	void MapMusInit();
 	void updateMapMusic();
 	void update();

@@ -8,8 +8,12 @@ Maps::Maps()
 	this->S.setTexture(this->T);
 	this->S.setTextureRect(sf::IntRect(0, 0, 800, 800)); //X, Y, W, H
 	this->S.setScale(5.0f, 5.0f);
-	this->S.setPosition(sf::Vector2f(-480, -550));
+	this->S.setPosition(sf::Vector2f(0, 0));
 	this->MapMusInit();
+
+	this->encounterBOX.setSize(sf::Vector2f(800, 800));
+	this->encounterBOX.setFillColor(sf::Color(255, 0, 0, 0));
+	this->encounterBOX.setPosition(sf::Vector2f(1920, 245));
 }
 
 Maps::~Maps()
@@ -17,9 +21,36 @@ Maps::~Maps()
 
 }
 
+
+void Maps::setThePlayerPosition(float x, float y)
+{
+	this->S.setPosition(sf::Vector2f(x, y));
+}
+
 void Maps::render(sf::RenderTarget* target)
 {
 	target->draw(this->S);
+	target->draw(this->encounterBOX);
+}
+
+float Maps::getThePlayerPositionX()
+{
+	return this->S.getPosition().x;
+}
+
+float Maps::getThePlayerPositionY()
+{
+	return this->S.getPosition().y;
+}
+
+float Maps::getEncounterBoxX()
+{
+	return this->encounterBOX.getPosition().x;
+}
+
+float Maps::getEncounterBoxy()
+{
+	return this->encounterBOX.getPosition().y;
 }
 
 void Maps::MapMusInit()
@@ -50,4 +81,5 @@ void Maps::update()
 void Maps::move(const float& dt, const float dir_x, const float dir_y)
 {
 	this->S.move((-1)*dir_x*this->movementSpeed*dt, (-1)*dir_y * this->movementSpeed * dt);
+	this->encounterBOX.move((-1) * dir_x * this->movementSpeed * dt, (-1) * dir_y * this->movementSpeed * dt);
 }

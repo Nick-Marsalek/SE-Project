@@ -61,6 +61,7 @@ private:
 	int speed;
 	int yield;
 	int currentLevel;
+	int currentXp;
 
 	//cpu
 	string cpuPoke;
