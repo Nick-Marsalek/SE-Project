@@ -21,15 +21,25 @@ void GameState::initKeybinds()
 
 void GameState::initButtons()
 {
-	this->buttons["START_POKEMON"] = new Button(100, 100, 50, 12,
-		&this->debugFont, "Pokemon", sf::Color::Black, 20,
-		0.5, 0.5, sf::Color::Black, 0.f,
-		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
+	this->buttons["START_POKEMON"] = new Button(1450, 0, 500, 150,
+		&this->debugFont, "Pokemon", sf::Color::White, 50,
+		1, 1, sf::Color::Black, 5.f,
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 255));
 
-	this->buttons["START_BAG"] = new Button(100, 100, 50, 12,
-		&this->debugFont, "Bag", sf::Color::Black, 20,
-		0.5, 0.5, sf::Color::Black, 0.f,
-		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
+	this->buttons["SETTINGS"] = new Button(1450, 300, 500, 150,
+		&this->debugFont, "Settings", sf::Color::White, 50,
+		1, 1, sf::Color::Black, 5.f,
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 255));
+
+	this->buttons["SAVE_GAME"] = new Button(1450, 600, 500, 150,
+		&this->debugFont, "Save", sf::Color::White, 50,
+		1, 1, sf::Color::Black, 5.f,
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 255));
+
+	this->buttons["MAIN_MENU"] = new Button(1450, 900, 500, 150,
+		&this->debugFont, "Main Menu", sf::Color::White, 50,
+		1, 1, sf::Color::Black, 5.f,
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 255), sf::Color(20, 20, 20, 255));
 }
 
 GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float* volume)
@@ -38,6 +48,13 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
 	this->initKeybinds();
 	this->initButtons();
 	this->startMenuActive = false;
+	this->startTransition = false;
+	this->pokemon = false;
+	this->settings = false;
+	this->save = false;
+	this->main_menu = false;
+	this->transitionBackground.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
+	this->transitionBackground.setFillColor(sf::Color(0, 0, 0, 0));
 	this->startMenuBox.setSize(sf::Vector2f(320, 240));
 	//1770
 	this->debugTextInit();
@@ -49,7 +66,7 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
 	this->buttonSprite.setTexture(this->buttonTexture);
 	this->buttonSprite.setTextureRect(sf::IntRect(0, 0, 360, 140)); //X, Y, W, H
 	this->buttonSprite.setScale(sf::Vector2f(0.15, 0.15));
-	
+
 	this->buttonSpriteBag = buttonSprite;
 	this->buttonSpriteSave = buttonSprite;
 
@@ -59,9 +76,10 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
 	}
 	this->startMenuSprite.setTexture(this->startMenuTexture);
 	this->startMenuSprite.setTextureRect(sf::IntRect(15, 606, 248, 159)); //X, Y, W, H
-	this->startMenuSprite.setScale(sf::Vector2f(1.35, 1.51));
-	
-	
+	this->startMenuSprite.setScale(sf::Vector2f(7, 7));
+	this->startMenuSprite.setPosition(sf::Vector2f(1600, 0));
+
+
 
 }
 
@@ -119,20 +137,38 @@ void GameState::updateInput(const float& dt)
 		{
 			this->player.idle();
 		}
-		
+
 	}
-	
+
 }
 
 void GameState::updateButtons()
 {
-	this->buttons.at("START_POKEMON")->update(this->mousePosView, player.Position.x - 149, player.Position.y - 115);
-	this->buttons.at("START_BAG")->update(this->mousePosView, player.Position.x - 149, player.Position.y - 90);
-		//it.second->update(this->mousePosView, player.Position.x - 149, player.Position.y - 115);
+	for (auto& it : this->buttons)
+	{
+		it.second->update(this->mousePosView, 0, 0);
+	}
 
-	this->buttonSprite.setPosition(player.Position.x - 160, player.Position.y - 120);
-	this->buttonSpriteBag.setPosition(player.Position.x - 160, player.Position.y - 95);
-	this->buttonSpriteSave.setPosition(player.Position.x - 160, player.Position.y - 70);
+	if (this->buttons["START_POKEMON"]->isActive())
+	{
+		this->pokemon = true;
+		this->startTransition = true;
+	}
+	if (this->buttons["SETTINGS"]->isActive())
+	{
+		this->settings = true;
+		this->startTransition = true;
+	}
+	if (this->buttons["SAVE_GAME"]->isActive())
+	{
+
+	}
+	if (this->buttons["MAIN_MENU"]->isActive())
+	{
+		this->main_menu = true;
+		this->startTransition = true;
+	}
+
 
 }
 
@@ -140,7 +176,6 @@ void GameState::updateStartMenu()
 {
 	static int bufferon = 0;
 	static int bufferoff = 0;
-	this->startMenuSprite.setPosition(player.Position.x - 160, player.Position.y - 120);
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("START_MENU"))))
 	{	
@@ -183,10 +218,11 @@ void GameState::updateDebugText()
 	//this->debugText.setPosition(player.Position.x + 120, player.Position.y - 120));
 }
 
+
 void GameState::update(const float& dt)
 {
 
-	this->startMenuBox.setPosition(sf::Vector2f(player.Position.x - 160, player.Position.y - 120));
+	this->startMenuBox.setPosition(sf::Vector2f(0, 0));
 	this->updateMousePositions();
 
 	this->updateInput(dt);
@@ -201,6 +237,40 @@ void GameState::update(const float& dt)
 
 	this->updateDebugText();
 
+	if (startTransition == true)
+	{
+		static float alpha = 1;
+		this->transitionBackground.setFillColor(sf::Color(0, 0, 0, alpha));
+		alpha *= 1.1;
+		if (alpha >= 255)
+		{
+			alpha = 0;
+			if (pokemon)
+			{
+				this->startTransition = false;
+				this->pokemon = false;
+				this->transitionBackground.setFillColor(sf::Color(0, 0, 0, 0));
+				alpha = 1;
+			}
+			else if (settings)
+			{
+				this->settings = false;
+				this->startTransition = false;
+				this->transitionBackground.setFillColor(sf::Color(0, 0, 0, 0));
+				alpha = 1;
+
+				this->states->push(new SettingsState(this->window, this->supportedKeys, this->states, this->volume));
+			}
+			else if (main_menu)
+			{
+				this->main_menu = false;
+				this->startTransition = false;
+				this->transitionBackground.setFillColor(sf::Color(0, 0, 0, 0));
+				alpha = 1;
+				this->quit = true;
+			}
+		}
+	}
 
 }
 
@@ -225,12 +295,10 @@ void GameState::render(sf::RenderTarget* target)
 
 	if (this->startMenuActive) {
 		
-		target->draw(this->startMenuBox);
+		//target->draw(this->startMenuBox);
 		target->draw(this->startMenuSprite);
-		target->draw(this->buttonSprite);
-		target->draw(this->buttonSpriteBag);
-		target->draw(this->buttonSpriteSave);
 		this->renderButtons(target);
 		
 	}
+	target->draw(this->transitionBackground);
 }

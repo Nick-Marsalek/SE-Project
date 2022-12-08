@@ -28,7 +28,7 @@ public:
 	sf::Texture T;
 	sf::RectangleShape shape;
 	sf::Music mapMus;
-	float movementSpeed = 100.f;
+	float movementSpeed = 200.f;
 	sf::Vector2f Position;
 	float gridSizeF = 16;
 	Maps();

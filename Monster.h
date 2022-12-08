@@ -8,16 +8,16 @@ using namespace std;
 typedef string Name;
 typedef double Weight;
 typedef double Height;
-typedef uint8_t EvoLevel;
-typedef uint8_t DexID;
-typedef uint8_t BSE_HP;
-typedef uint8_t BSE_ATK;
-typedef uint8_t BSE_DEF;
-typedef uint8_t BSE_SPD;
-typedef uint8_t BSE_SPA;
-typedef uint8_t BSE_SPD;
-typedef uint8_t BSE_SPE;
-typedef uint8_t EXP_YLD;
+typedef int EvoLevel;
+typedef int DexID;
+typedef int BSE_HP;
+typedef int BSE_ATK;
+typedef int BSE_DEF;
+typedef int BSE_SPD;
+typedef int BSE_SPA;
+typedef int BSE_SPD;
+typedef int BSE_SPE;
+typedef int EXP_YLD;
 
 enum class BaseType {
 	Bug,

@@ -131,6 +131,7 @@ void BattleState::initMonsters()
 	this->Pikachu.canEvolve = canEvolve;
 	this->Pikachu.PID = PID;
 	this->Pikachu.HP = HP;
+	cout << "CPU PIKACHU HP: " << this->Pikachu.HP << endl;
 	this->Pikachu.ATK = ATK;
 	this->Pikachu.DEF = DEF;
 	this->Pikachu.SPE = SPE;
@@ -147,6 +148,8 @@ void BattleState::initMonsters()
 	ifs2 >> this->cpuLevel;
 	if (this->cpuPoke == "Totodile")
 	{
+		cpuHP = this->Totodile.HP + (2 * this->cpuLevel);
+		cpuCurrentHP = this->Totodile.HP + (2 * this->cpuLevel);
 		cpuATTACK = this->Totodile.ATK + (2 * this->cpuLevel);
 		cpuDEF = this->Totodile.DEF + (2 * this->cpuLevel);
 		cpuSPEED = this->Totodile.SPE + (2 * this->cpuLevel);
@@ -154,6 +157,8 @@ void BattleState::initMonsters()
 	}
 	else if (this->cpuPoke == "Chikorita")
 	{
+		cpuHP = this->Chikorita.HP + (2 * this->cpuLevel);
+		cpuCurrentHP = this->Chikorita.HP + (2 * this->cpuLevel);
 		cpuATTACK = this->Chikorita.ATK + (2 * this->cpuLevel);
 		cpuDEF = this->Chikorita.DEF + (2 * this->cpuLevel);
 		cpuSPEED = this->Chikorita.SPE + (2 * this->cpuLevel);
@@ -161,6 +166,8 @@ void BattleState::initMonsters()
 	}
 	else if (this->cpuPoke == "Cyndaquil")
 	{
+		cpuHP = this->Cyndaquil.HP + (2 * this->cpuLevel);
+		cpuCurrentHP = this->Cyndaquil.HP + (2 * this->cpuLevel);
 		cpuATTACK = this->Cyndaquil.ATK + (2 * this->cpuLevel);
 		cpuDEF = this->Cyndaquil.DEF + (2 * this->cpuLevel);
 		cpuSPEED = this->Cyndaquil.SPE + (2 * this->cpuLevel);
@@ -168,6 +175,8 @@ void BattleState::initMonsters()
 	}
 	else if (this->cpuPoke == "Pikachu")
 	{
+		cpuHP = this->Pikachu.HP + (2 * this->cpuLevel);
+		cpuCurrentHP = this->Pikachu.HP + (2 * this->cpuLevel);
 		cpuATTACK = this->Pikachu.ATK + (2 * this->cpuLevel);
 		cpuDEF = this->Pikachu.DEF + (2 * this->cpuLevel);
 		cpuSPEED = this->Pikachu.SPE + (2 * this->cpuLevel);
@@ -180,17 +189,25 @@ void BattleState::initMonsters()
 BattleState::BattleState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float* volume)
 	: State(window, supportedKeys, states, volume)
 {
+	srand(time(NULL));
 	this->initKeybinds();
 	this->debugTextInit();
 	this->initButtons();
 	this->initMonsters();
 	this->initBattle();
 	this->initSprites();
+	this->initBattleUI();
 	this->openingAnimationDone = false;
 	this->secondAnimationDone = false;
 	this->pokemonCaught = false;
+	this->cpuTurn = false;
+	this->playerTurn = true;
+	this->showDamageText = true;
+	this->endBattle = false;
+	this->playerDead = false;
 	this->transition.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
 	this->transition.setFillColor(sf::Color::Black);
+	this->initMusic();
 	this->startBattle();
 }
 
@@ -220,6 +237,7 @@ void BattleState::debugTextInit()
 void BattleState::endState()
 {
 	std::cout << "Ending Battle State" << std::endl;
+	this->quit = true;
 
 }
 
@@ -232,15 +250,33 @@ void BattleState::updateButtons()
 
 	if (this->buttons["TACKLE_ATTACK"]->isActive())
 	{
+		if (this->playerTurn == true)
+		{
+			volatile float n = rand() % 30 + 1;
+			this->damage = static_cast<int>(((n + 70.0) / 100) * (10 + (this->attack - this->cpuATTACK)));
+			if (this->damage < 1) {
+				this->damage = 1;
+			}
+			this->cpuCurrentHP -= damage;
+			this->damageText.setString("You hit for " + to_string(this->damage) + "!");
+			this->showDamageText = true;
+			this->playerTurn = false;
+			this->cpuTurn = true;
+			std::this_thread::sleep_for(std::chrono::milliseconds(300));
+		}
 
+
+		//cout << "BUTTON" << endl;
 	}
 	if (this->buttons["GROWL_ATTACK"]->isActive())
 	{
-
+		
+		std::this_thread::sleep_for(std::chrono::milliseconds(300));
 	}
 	if (this->buttons["CATCH_POKEMON"]->isActive())
 	{
-
+		this->atmpCatch();
+		std::this_thread::sleep_for(std::chrono::milliseconds(300));
 	}
 }
 
@@ -273,17 +309,34 @@ void BattleState::initBattle()
 		throw("Failed to read player save");
 	}
 	ifs >> this->pokemonName;
+	cout << this->pokemonName << endl;
 	ifs >> this->evolveLevel;
+	cout << this->evolveLevel << endl;
 	ifs >> this->canEvolve;
+	cout << this->canEvolve << endl;
 	ifs >> this->pid;
+	cout << this->pid << endl;
 	ifs >> this->hp;
+	cout << this->hp << endl;
 	ifs >> this->currentHP;
+	cout << this->currentHP << endl;
 	ifs >> this->attack;
+	cout << this->attack << endl;
 	ifs >> this->defense;
+	cout << this->defense << endl;
 	ifs >> this->speed;
+	cout << this->speed << endl;
 	ifs >> this->yield;
+	cout << this->yield << endl;
 	ifs >> this->currentLevel;
+	cout << this->currentLevel << endl;
 	ifs.close();
+	this->hp = this->hp + (2 * this->currentLevel);
+	this->currentHP = this->currentHP + (2 * this->currentLevel);
+	this->attack = this->attack + (2 * this->currentLevel);
+	this->defense = this->defense + (2 * this->currentLevel);
+	this->speed = this->speed + (2 * this->currentLevel);
+	this->yield = this->yield + (2 * this->currentLevel);
 
 	if (!pokemonTexture.loadFromFile("Assets/Sprites/pokemonSprites3.png"))
 	{
@@ -414,15 +467,21 @@ void BattleState::update(const float& dt)
 {
 	this->updateMousePositions();
 	this->updateDebugText();
+	this->updateButtons();
+	if (this->battleTheme.getStatus() != this->battleTheme.Playing)
+	{
+		this->battleTheme.play();
+		this->battleTheme.setVolume(*this->volume);
+	}
 	static float alpha = 255;
-	if (!openingAnimationDone)
+	if (!this->openingAnimationDone)
 	{
 
 		this->transition.setFillColor(sf::Color(0, 0, 0, alpha));
 		alpha *= 0.95;
 		if (alpha <= 1)
 		{
-			openingAnimationDone = true;
+			this->openingAnimationDone = true;
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 	}
@@ -432,10 +491,27 @@ void BattleState::update(const float& dt)
 		alpha *= 1.05;
 		if (alpha >= 255)
 		{
-			secondAnimationDone = true;
+			this->secondAnimationDone = true;
+			alpha = 1;
+		}
+	}
+	this->PlayerHP.setString(to_string(this->currentHP) + "/" + to_string(this->hp));
+	this->EnemyHP.setString(to_string(this->cpuCurrentHP) + "/" + to_string(this->cpuHP));
+	if (cpuTurn == true)
+	{
+		this->startCPUTurn();
+	}
+	if (endBattle == true)
+	{
+		this->transition.setFillColor(sf::Color(0, 0, 0, alpha));
+		alpha *= 1.025;
+		if (alpha >= 255)
+		{
+			this->endBattleState();
 			alpha = 0;
 		}
 	}
+
 	
 }
 
@@ -467,9 +543,31 @@ void BattleState::render(sf::RenderTarget* target)
 		target->draw(this->background);
 		target->draw(this->playerPokemon);
 		target->draw(this->enemyPokemon);
-		this->renderButtons(target);
+		target->draw(this->PlayerPoke);
+		target->draw(this->EnemyPoke);
+		target->draw(this->PlayerHP);
+		target->draw(this->EnemyHP);
+		if (this->playerTurn == true)
+			this->renderButtons(target);
+		if (this->showDamageText == true)
+		{
+			target->draw(this->damageText);
+			target->draw(this->damageText2);
+		}
+		if (this->endBattle == true)
+		{
+			target->draw(this->background);
+			if(!playerDead)
+				target->draw(this->playerPokemon);
+			if(!pokemonCaught)
+				target->draw(this->enemyPokemon);
+			target->draw(this->transition);
+			target->draw(this->damageText);
+		}
+			
 	}
-		
+
+	
 	
 	
 }
@@ -477,5 +575,146 @@ void BattleState::render(sf::RenderTarget* target)
 void BattleState::startBattle()
 {
 
+}
+
+void BattleState::initBattleUI()
+{
+	this->PlayerPoke.setFont(this->debugFont);
+	this->PlayerPoke.setString(this->pokemonName + " Lvl: " + to_string(this->currentLevel));
+	this->PlayerPoke.setFillColor(sf::Color::White);
+	this->PlayerPoke.setCharacterSize(72);
+	this->PlayerPoke.setOutlineColor(sf::Color::Black);
+	this->PlayerPoke.setOutlineThickness(5.f);
+	this->PlayerPoke.setPosition(200, 600);
+
+	this->EnemyPoke.setFont(this->debugFont);
+	this->EnemyPoke.setString(this->cpuPoke + " Lvl: " + to_string(this->cpuLevel));
+	this->EnemyPoke.setFillColor(sf::Color::White);
+	this->EnemyPoke.setCharacterSize(72);
+	this->EnemyPoke.setOutlineColor(sf::Color::Black);
+	this->EnemyPoke.setOutlineThickness(5.f);
+	this->EnemyPoke.setPosition(1200, 100);
+
+	this->PlayerHP.setFont(this->debugFont);
+	this->PlayerHP.setString(to_string(this->currentHP) + "/" + to_string(this->hp));
+	this->PlayerHP.setFillColor(sf::Color::White);
+	this->PlayerHP.setCharacterSize(72);
+	this->PlayerHP.setOutlineColor(sf::Color::Black);
+	this->PlayerHP.setOutlineThickness(5.f);
+	this->PlayerHP.setPosition(200, 700);
+
+	this->EnemyHP.setFont(this->debugFont);
+	this->EnemyHP.setString(to_string(this->cpuCurrentHP) + "/" + to_string(this->cpuHP));
+	this->EnemyHP.setFillColor(sf::Color::White);
+	this->EnemyHP.setCharacterSize(72);
+	this->EnemyHP.setOutlineColor(sf::Color::Black);
+	this->EnemyHP.setOutlineThickness(5.f);
+	this->EnemyHP.setPosition(1200, 200);
+
+	this->damageText.setFont(this->debugFont);
+	this->damageText.setFillColor(sf::Color::White);
+	this->damageText.setCharacterSize(72);
+	this->damageText.setOutlineColor(sf::Color::Black);
+	this->damageText.setOutlineThickness(5.f);
+	this->damageText.setPosition(1200, 800);
+
+	this->damageText2.setFont(this->debugFont);
+	this->damageText2.setFillColor(sf::Color::White);
+	this->damageText2.setCharacterSize(72);
+	this->damageText2.setOutlineColor(sf::Color::Black);
+	this->damageText2.setOutlineThickness(5.f);
+	this->damageText2.setPosition(200, 400);
+
+}
+
+void BattleState::initMusic()
+{
+	if (!this->battleTheme.openFromFile("Assets/Music/battleTheme.wav"))
+	{
+		throw("Failed to load title screen music");
+	}
+	this->battleTheme.setLoop(true);
+	this->battleTheme.setVolume(*this->volume);
+}
+
+void BattleState::atmpCatch()
+{
+	volatile int CR = rand() % 100 + 1;
+	if (CR >= this->cpuCurrentHP)
+	{
+		cout << this->cpuPoke << " has been caught!" << endl;
+		this->damageText.setString(this->cpuPoke + " has been Caught!");
+		this->damageText.setPosition(900, 500);
+		this->playerTurn = false;
+		this->cpuTurn = false;
+		this->showDamageText = false;
+		this->pokemonCaught = true;
+		this->endBattle = true;
+	}
+	else
+	{
+		cout << this->cpuPoke << " dodged the ball!" << endl;
+		this->startCPUTurn();
+	}
+}
+
+void BattleState::endBattleState()
+{
+	this->battleTheme.stop();
+	this->endState();
+}
+
+void BattleState::startCPUTurn()
+{
+	volatile int n = rand() % 2 + 1;
+	volatile float m = rand() % 30 + 1;
+	if (this->cpuCurrentHP >= 0)
+	{
+		switch (n)
+		{
+		case 1:
+			cout << "Enemy " << this->cpuPoke << " used TACKLE!" << endl;
+			this->damage = static_cast<int>(((m + 70.0) / 100) * (10 + (this->cpuATTACK - this->defense)));
+			if (this->damage < 1) {
+				this->damage = 1;
+			}
+			this->currentHP -= damage;
+			this->damageText2.setString("You took " + to_string(damage) + "!");
+			if (this->currentHP > 0)
+			{
+				cout << this->pokemonName << " took " << damage << " damage!" << endl;
+				std::this_thread::sleep_for(std::chrono::milliseconds(300));
+				this->cpuTurn = false;
+				this->playerTurn = true;
+				break;
+			}
+			else
+			{
+				this->damageText.setString("You lost!");
+				this->damageText.setPosition(900, 500);
+				this->cpuTurn = false;
+				this->playerTurn = false;
+				this->endBattle = true;
+				this->playerDead = true;
+			}
+		case 2:
+			this->damageText2.setString(this->cpuPoke + " used GROWL!\nBut it failed!");
+			cout << "Enemy " << this->cpuPoke << " used GROWL! But it failed!" << endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(300));
+			this->cpuTurn = false;
+			this->playerTurn = true;
+			break;
+		}
+	}
+	else
+	{
+		this->cpuCurrentHP = 0;
+		this->endBattle = true;
+		cout << "Enemy " << this->cpuPoke << " has Fainted!" << endl;
+		this->pokemonCaught = true;
+		this->damageText.setString(this->cpuPoke + " has been defeated!");
+		this->damageText.setPosition(900, 500);
+
+	}
 }
 

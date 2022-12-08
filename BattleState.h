@@ -5,6 +5,9 @@
 #include "Monster.h"
 #include <chrono>
 #include <thread>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 class BattleState : public State
 {
@@ -34,10 +37,16 @@ private:
 	sf::Sprite enemyPokemonIntro;
 	sf::Sprite enemyPokemon;
 
+	sf::Music battleTheme;
+
 	bool openingAnimationDone;
 	bool secondAnimationDone;
 	bool playerTurn;
+	bool cpuTurn;
 	bool pokemonCaught;
+	bool playerDead;
+	bool showDamageText;
+	bool endBattle;
 
 
 	//player stuff
@@ -56,10 +65,17 @@ private:
 	//cpu
 	string cpuPoke;
 	int cpuLevel;
+	int cpuHP;
+	int cpuCurrentHP;
 	int cpuATTACK;
 	int cpuDEF;
 	int cpuSPEED;
 	int cpuYIELD;
+
+	//Battle UI
+	sf::Text PlayerPoke, EnemyPoke, PlayerHP, EnemyHP;
+	int damage;
+	sf::Text damageText, damageText2;
 
 
 public:
@@ -71,12 +87,17 @@ public:
 	void endState();
 	void updateButtons();
 	void updateDebugText();
+	void initMusic();
+	void initBattleUI();
 	void updateInput(const float& dt);
 	//Battle Functions
 	void initBattle();
 	void initSprites();
 	void introAnimation();
 	void startBattle();
+	void startCPUTurn();
+	void atmpCatch();
+	void endBattleState();
 
 	void update(const float& dt);
 	void renderButtons(sf::RenderTarget* target = nullptr);

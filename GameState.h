@@ -3,6 +3,7 @@
 #include "State.h"
 #include "Button.h"
 #include "Map.h"
+#include "MainMenuState.h"
 class GameState: public State
 {
 private:
@@ -18,7 +19,12 @@ private:
 	sf::Texture startMenuTexture;
 
 	bool startMenuActive;
-	sf::RectangleShape startMenuBox;
+	bool startTransition;
+	bool pokemon;
+	bool settings;
+	bool save;
+	bool main_menu;
+	sf::RectangleShape startMenuBox, transitionBackground;
 	sf::Font debugFont;
 	sf::Text debugText;
 	std::map<std::string, Button*>buttons;
