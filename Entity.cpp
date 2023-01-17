@@ -27,9 +27,9 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y, float m
 	{
 		this->movingRight = false;
 		//ytext = ((int)S.getPosition().x) / 15 % 3;
-		ytext = (int)(mapx)*(-1) / 15 % 3;
+		ytext = (int)(mapx)*(-1) / 25 % 4;
 		xtext = 30;
-		ytext = ytext * 21;
+		ytext = ytext * 22;
 		this->S.setTextureRect(sf::IntRect(xtext,ytext,14,22));
 		this->S.setScale(5.0f, 5.0f);
 	}
@@ -37,8 +37,8 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y, float m
 	{
 		this->movingRight = false;
 		//ytext = ((int)S.getPosition().y)/15 % 3;
-		ytext = (int)(mapy) * (-1) / 15 % 3;
-		ytext = ytext * 21;
+		ytext = (int)(mapy) * (-1) / 25 % 4;
+		ytext = ytext * 22;
 		xtext = 0;
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 22));
 		this->S.setScale(5.0f, 5.0f);
@@ -47,8 +47,8 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y, float m
 	else if (dir_x > 0) //Moving Right
 	{
 		//ytext = ((int)S.getPosition().x) / 15 % 3;
-		ytext = (int)(mapx) * (-1) / 15 % 3;
-		ytext = ytext * 21;
+		ytext = (int)(mapx) * (-1) / 25 % 4;
+		ytext = ytext * 22;
 		xtext = 30;
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 22));
 		this->S.setScale(-5.0f, 5.0f);
@@ -59,8 +59,8 @@ void Entity::move(const float& dt, const float dir_x, const float dir_y, float m
 	{
 		this->movingRight = false;
 		//ytext = ((int)S.getPosition().y) / 15 % 3;
-		ytext = (int)(mapy) * (-1) / 15 % 3;
-		ytext = ytext * 21;
+		ytext = (int)(mapy) * (-1) / 25 % 4;
+		ytext = ytext * 22;
 		xtext = 14;
 		this->S.setTextureRect(sf::IntRect(xtext, ytext, 14, 22));
 		this->S.setScale(5.0f, 5.0f);
