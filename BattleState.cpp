@@ -482,7 +482,6 @@ void BattleState::update(const float& dt)
 	static float alpha = 255;
 	if (!this->openingAnimationDone)
 	{
-
 		this->transition.setFillColor(sf::Color(0, 0, 0, alpha));
 		alpha *= 0.95;
 		if (alpha <= 1)
@@ -493,6 +492,7 @@ void BattleState::update(const float& dt)
 	}
 	if (openingAnimationDone && !secondAnimationDone)
 	{
+		alpha += 1;
 		this->transition.setFillColor(sf::Color(0, 0, 0, alpha));
 		alpha *= 1.05;
 		if (alpha >= 255)
