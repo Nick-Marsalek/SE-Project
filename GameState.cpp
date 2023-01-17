@@ -177,6 +177,7 @@ void GameState::checkForEncounter()
 
 void GameState::startEncounter()
 {
+	srand(time(NULL));
 	this->song.stop();
 	encounter = false;
 	ofstream ofs;
