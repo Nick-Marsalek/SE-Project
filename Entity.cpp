@@ -10,7 +10,7 @@ Entity::Entity()
 	this->S.setTextureRect(sf::IntRect(0,0,14,21)); //X, Y, W, H
 	this->S.setScale(5.0f, 5.0f);
 	this->playerCollisonBox.setSize(sf::Vector2f(70, 40));
-	this->playerCollisonBox.setFillColor(sf::Color(255, 0, 0, 0));
+	this->playerCollisonBox.setFillColor(sf::Color(0, 255, 0, 0));
 	this->playerCollisonBox.setPosition(sf::Vector2f(940, 540));
 	this->movingRight = false;
 }

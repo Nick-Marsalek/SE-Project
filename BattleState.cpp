@@ -646,6 +646,7 @@ void BattleState::initMusic()
 
 void BattleState::atmpCatch()
 {
+	srand(time(NULL));
 	volatile int CR = rand() % 100 + 1;
 	if (CR >= this->cpuCurrentHP)
 	{
@@ -685,7 +686,7 @@ void BattleState::startCPUTurn()
 {
 	volatile int n = rand() % 2 + 1;
 	volatile float m = rand() % 30 + 1;
-	if (this->cpuCurrentHP >= 0)
+	if (this->cpuCurrentHP > 0)
 	{
 		switch (n)
 		{

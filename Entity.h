@@ -24,12 +24,13 @@ protected:
 	sf::Sprite S;
 	sf::Texture T;
 	sf::RectangleShape shape;
-	sf::RectangleShape playerCollisonBox;
+	
 	float movementSpeed = 100.f;
 
 	bool movingRight;
 
 public:
+	sf::RectangleShape playerCollisonBox;
 	sf::Vector2f Position;
 	Entity();
 	virtual ~Entity();
