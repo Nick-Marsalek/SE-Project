@@ -9,6 +9,7 @@ private:
 	sf::Font font;
 	sf::Text prompt, debugText;
 	std::map<std::string, Button*>buttons;
+	std::string Money;
 
 
 	void initFonts();

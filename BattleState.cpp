@@ -336,13 +336,14 @@ void BattleState::initBattle()
 	ifs >> this->currentLevel;
 	cout << this->currentLevel << endl;
 	ifs >> this->currentXp;
+	ifs >> this->totalMoney;
 	ifs.close();
-	this->hp = this->hp + (2 * this->currentLevel);
-	this->currentHP = this->currentHP + (2 * this->currentLevel);
-	this->attack = this->attack + (2 * this->currentLevel);
-	this->defense = this->defense + (2 * this->currentLevel);
-	this->speed = this->speed + (2 * this->currentLevel);
-	this->yield = this->yield + (2 * this->currentLevel);
+	//this->hp = this->hp + (2 * this->currentLevel);
+	//this->currentHP = this->currentHP + (2 * this->currentLevel);
+	//this->attack = this->attack + (2 * this->currentLevel);
+	//this->defense = this->defense + (2 * this->currentLevel);
+	//this->speed = this->speed + (2 * this->currentLevel);
+	//this->yield = this->yield + (2 * this->currentLevel);
 
 	if (!pokemonTexture.loadFromFile("Assets/Sprites/pokemonSprites3.png"))
 	{
@@ -730,15 +731,23 @@ void BattleState::startCPUTurn()
 		this->endBattle = true;
 		cout << "Enemy " << this->cpuPoke << " has Fainted!" << endl;
 		this->pokemonCaught = true;
-		this->damageText.setString(this->cpuPoke + " has been defeated!");
+		int money = rand() % 34;
+		this->damageText.setString(this->cpuPoke + " has been defeated!\n\n You got $"+to_string(money));
 		this->damageText.setPosition(900, 500);
 
-		volatile float xpEarned = rand() % 20 + 1;
+		volatile float xpEarned = rand() % 20 + cpuYIELD;
 		int previousLevel = this->currentLevel;
 		this->currentXp += (int)(xpEarned);
-		if (this->currentXp > 50)
+		if (this->currentXp > (50 + 5*(this->currentLevel)))
 		{
+			cout << "Level Up!" << endl;
 			this->currentLevel += 1;
+			this->hp = this->hp + (2 * previousLevel);
+			this->currentHP = this->currentHP + (2 * previousLevel);
+			this->attack = this->attack + (2 * previousLevel);
+			this->defense = this->defense + (2 * previousLevel);
+			this->speed = this->speed + (2 * previousLevel);
+			this->yield = this->yield + (2 * previousLevel);
 			this->currentXp = 0;
 		}
 		ofstream ofs;
@@ -754,24 +763,25 @@ void BattleState::startCPUTurn()
 		ofs << " ";
 		ofs << this->pid;
 		ofs << " ";
-		ofs << (this->hp-(2*previousLevel));
+		ofs << (this->hp);
 		ofs << " ";
-		ofs << (this->currentHP-(2*previousLevel));
+		ofs << (this->hp);
 		ofs << " ";
-		ofs << (this->attack-(2*previousLevel));
+		ofs << (this->attack);
 		ofs << " ";
-		ofs << (this->defense-(2*previousLevel));
+		ofs << (this->defense);
 		ofs << " ";
-		ofs << (this->speed-(2*previousLevel));
+		ofs << (this->speed);
 		ofs << " ";
-		ofs << (this->yield-(2*previousLevel));
+		ofs << (this->yield);
 		ofs << " ";
 		ofs << this->currentLevel;
 		ofs << " ";
 		ofs << this->currentXp;
-
+		ofs << " ";
+		ofs << (this->totalMoney+money);
 		ofs.close();
-
+		this->cpuTurn = false;
 
 	}
 }

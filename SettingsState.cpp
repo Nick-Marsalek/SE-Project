@@ -15,7 +15,7 @@ void SettingsState::initKeybinds()
 void SettingsState::initButtons()
 {
 	this->buttons["BACK_TO_MAIN"] = new Button(725, 200, 500, 75,
-		&this->font, "Back to Main Menu", sf::Color::White, 72,
+		&this->font, "Back", sf::Color::White, 72,
 		1, 1, sf::Color::Black, 5.f,
 		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
 

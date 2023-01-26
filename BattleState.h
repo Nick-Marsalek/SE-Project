@@ -62,6 +62,7 @@ private:
 	int yield;
 	int currentLevel;
 	int currentXp;
+	int totalMoney;
 
 	//cpu
 	string cpuPoke;

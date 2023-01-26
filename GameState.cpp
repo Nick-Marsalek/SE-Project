@@ -211,6 +211,7 @@ void GameState::startEncounter()
 	else if (pokemonChance >= 90)
 	{
 		ofs << "Pikachu ";
+		ofs << lvl;
 		
 		ofs.close();
 		this->states->push(new BattleState(this->window, this->supportedKeys, this->states, this->volume));
@@ -229,24 +230,37 @@ void GameState::updateInput(const float& dt)
 	if (!startMenuActive)
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_LEFT"))))
-		{
-			this->MA.move(dt, -1.f, 0.f);
-			this->player.move(dt, -1.f, 0.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
+		{	
+			if (this->player.playerCollisonBox.getPosition().x - 1 > this->MA.houseCollision.getPosition().x + 630 - 250 || this->player.playerCollisonBox.getPosition().x - 1 < this->MA.houseCollision.getPosition().x || this->player.playerCollisonBox.getPosition().y > this->MA.houseCollision.getPosition().y+325 || this->player.playerCollisonBox.getPosition().y+40 < this->MA.houseCollision.getPosition().y)
+			{
+				//std::cout << this->player.playerCollisonBox.getPosition().x - 1 << " and " << this->MA.houseCollision.getPosition().x << endl;
+				this->MA.move(dt, -1.f, 0.f);
+				this->player.move(dt, -1.f, 0.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
+			}
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_RIGHT"))))
 		{
-			this->MA.move(dt, 1.f, 0.f);
-			this->player.move(dt, 1.f, 0.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
+			if (this->player.playerCollisonBox.getPosition().x + 76 < this->MA.houseCollision.getPosition().x || this->player.playerCollisonBox.getPosition().x > this->MA.houseCollision.getPosition().x+630-250 || this->player.playerCollisonBox.getPosition().y > this->MA.houseCollision.getPosition().y + 325 || this->player.playerCollisonBox.getPosition().y + 40 < this->MA.houseCollision.getPosition().y)
+			{
+				this->MA.move(dt, 1.f, 0.f);
+				this->player.move(dt, 1.f, 0.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
+			}
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_UP"))))
 		{
-			this->MA.move(dt, 0.f, -1.f);
-			this->player.move(dt, 0.f, -1.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
+			if (this->player.playerCollisonBox.getPosition().y - 1 > this->MA.houseCollision.getPosition().y + 325 || this->player.playerCollisonBox.getPosition().y - 1 < this->MA.houseCollision.getPosition().y || this->player.playerCollisonBox.getPosition().x > this->MA.houseCollision.getPosition().x + 630-250 || this->player.playerCollisonBox.getPosition().x + 40 < this->MA.houseCollision.getPosition().x)
+			{
+				this->MA.move(dt, 0.f, -1.f);
+				this->player.move(dt, 0.f, -1.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
+			}
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keybinds.at("MOVE_DOWN"))))
 		{
-			this->MA.move(dt, 0.f, 1.f);
-			this->player.move(dt, 0.f, 1.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
+			if (this->player.playerCollisonBox.getPosition().y + 45 < this->MA.houseCollision.getPosition().y || this->player.playerCollisonBox.getPosition().y > this->MA.houseCollision.getPosition().y + 325 || this->player.playerCollisonBox.getPosition().x > this->MA.houseCollision.getPosition().x + 630-250 || this->player.playerCollisonBox.getPosition().x + 40 < this->MA.houseCollision.getPosition().x)
+			{
+				this->MA.move(dt, 0.f, 1.f);
+				this->player.move(dt, 0.f, 1.f, this->MA.getThePlayerPositionX(), this->MA.getThePlayerPositionY());
+			}
 		}
 		else
 		{

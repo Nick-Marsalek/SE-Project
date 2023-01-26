@@ -142,6 +142,8 @@ void NewGameState::updateButtons()
 		}
 		// name evolvl bool pid hp curhp attk def speed yld currlvl
 		ofs << "Cyndaquil 17 1 2 39 39 52 50 65 10 5 0";
+		ofs << " ";
+		ofs << 0;
 		ofs.close();
 
 		this->states->push(new GameState(this->window, this->supportedKeys, this->states, this->volume));
@@ -174,6 +176,8 @@ void NewGameState::updateButtons()
 		}
 		// name evolvl bool pid hp curhp attk def speed yld currlvl
 		ofs << "Totodile 18 1 1 50 50 65 64 43 10 5 0";
+		ofs << " ";
+		ofs << 0;
 		ofs.close();
 
 		this->states->push(new GameState(this->window, this->supportedKeys, this->states, this->volume));
@@ -206,6 +210,8 @@ void NewGameState::updateButtons()
 		}
 		// name evolvl bool pid hp curhp attk def speed yld currlvl
 		ofs << "Chikorita 18 1 3 45 45 49 65 45 10 5 0";
+		ofs << " ";
+		ofs << 0;
 		ofs.close();
 
 		this->states->push(new GameState(this->window, this->supportedKeys, this->states, this->volume));

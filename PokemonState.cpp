@@ -19,6 +19,11 @@ void PokemonState::initButtons()
 		&this->font, "Back", sf::Color::White, 72,
 		1, 1, sf::Color::Black, 5.f,
 		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
+
+	this->buttons["BUY"] = new Button(850, 700, 230, 75,
+		&this->font, "Buyable Ending: $100", sf::Color::White, 72,
+		1, 1, sf::Color::Black, 5.f,
+		sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0));
 }
 
 PokemonState::PokemonState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys, std::stack<State*>* states, float* volume) 
@@ -55,7 +60,11 @@ PokemonState::PokemonState(sf::RenderWindow* window, std::map<std::string, int>*
 		}
 	}
 	ifs.close();
-	this->prompt.setString("Number of Each Pokemon Caught:\n\nCyndaquil: " + std::to_string(numfire) + "\n\nTotodile: " + std::to_string(numwater) + "\n\nChikorita: " + std::to_string(numgrass)+"\n\nPikachu: " + std::to_string(numpika));
+	ifs.open("Data/playerSave.dat");
+	for (int i = 0; i < 13; i++)
+		ifs >> this->Money;
+	ifs.close();
+	this->prompt.setString("Number of Each Pokemon Caught:\n\nCyndaquil: " + std::to_string(numfire) + "\n\nTotodile: " + std::to_string(numwater) + "\n\nChikorita: " + std::to_string(numgrass)+"\n\nPikachu: " + std::to_string(numpika)+"\n\nMoney Earned: $"+this->Money);
 	
 
 }
@@ -96,6 +105,13 @@ void PokemonState::updateButtons()
 	if (this->buttons["BACK"]->isActive())
 	{
 		this->quit = true;
+	}
+
+	if (this->buttons["BUY"]->isActive())
+	{
+		if (stoi(this->Money) >= 100) {
+			this->window->close();
+		}
 	}
 
 }
